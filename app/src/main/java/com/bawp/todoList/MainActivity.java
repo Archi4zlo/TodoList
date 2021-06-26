@@ -1,6 +1,7 @@
 package com.bawp.todoList;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -8,7 +9,10 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.bawp.todoList.adapter.RecyclerViewAdapter;
 import com.bawp.todoList.model.Priority;
 import com.bawp.todoList.model.Task;
 import com.bawp.todoList.model.TaskViewModel;
@@ -19,7 +23,10 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "ITEM";
     private TaskViewModel taskViewModel;
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter recyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +35,22 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         taskViewModel = new ViewModelProvider.AndroidViewModelFactory(
                 MainActivity.this.getApplication()).create(TaskViewModel.class);
 
+        taskViewModel.getAllTasks().observe(this, tasks -> {
+           recyclerViewAdapter = new RecyclerViewAdapter(tasks);
+           recyclerView.setAdapter(recyclerViewAdapter);
+        });
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            Task task = new Task("Todo", Priority.HIGH, Calendar.getInstance().getTime(), Calendar.getInstance().getTime(), false);
-
+            Task task = new Task("Todo", Priority.HIGH, Calendar.getInstance().getTime(),
+                    Calendar.getInstance().getTime(), false);
             TaskViewModel.insert(task);
         });
     }
