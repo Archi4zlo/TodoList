@@ -23,7 +23,6 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "ITEM";
     private TaskViewModel taskViewModel;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
