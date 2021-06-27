@@ -4,28 +4,28 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bawp.todoList.adapter.OnTodoClickListener;
 import com.bawp.todoList.adapter.RecyclerViewAdapter;
-import com.bawp.todoList.model.Priority;
 import com.bawp.todoList.model.Task;
 import com.bawp.todoList.model.TaskViewModel;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Calendar;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnTodoClickListener {
 
     private TaskViewModel taskViewModel;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
+
+    BottomSheetFragment bottomSheetFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +33,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        bottomSheetFragment = new BottomSheetFragment();
+        ConstraintLayout constraintLayout = findViewById(R.id.bottomSheet);
+        BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior = BottomSheetBehavior.from(constraintLayout);
+        bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_HIDDEN);
+
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -42,16 +48,21 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.getApplication()).create(TaskViewModel.class);
 
         taskViewModel.getAllTasks().observe(this, tasks -> {
-           recyclerViewAdapter = new RecyclerViewAdapter(tasks);
+           recyclerViewAdapter = new RecyclerViewAdapter(tasks, this);
            recyclerView.setAdapter(recyclerViewAdapter);
         });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            Task task = new Task("Todo", Priority.HIGH, Calendar.getInstance().getTime(),
-                    Calendar.getInstance().getTime(), false);
-            TaskViewModel.insert(task);
+//            Task task = new Task("Todo", Priority.HIGH, Calendar.getInstance().getTime(),
+//                    Calendar.getInstance().getTime(), false);
+//            TaskViewModel.insert(task);
+            showBottomSheetDialog();
         });
+    }
+
+    private void showBottomSheetDialog() {
+        bottomSheetFragment.show(getSupportFragmentManager(),bottomSheetFragment.getTag());
     }
 
     @Override
@@ -74,5 +85,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTodoClick(int adapterPosition, Task task) {
+        Log.d("Click","onTodoClick "+ adapterPosition);
     }
 }
