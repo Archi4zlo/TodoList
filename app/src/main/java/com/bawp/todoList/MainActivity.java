@@ -1,5 +1,6 @@
 package com.bawp.todoList;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bawp.todoList.adapter.OnTodoClickListener;
 import com.bawp.todoList.adapter.RecyclerViewAdapter;
+import com.bawp.todoList.model.SharedViewModel;
 import com.bawp.todoList.model.Task;
 import com.bawp.todoList.model.TaskViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements OnTodoClickListen
     private TaskViewModel taskViewModel;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
+    private SharedViewModel sharedViewModel;
 
     BottomSheetFragment bottomSheetFragment;
 
@@ -47,18 +50,16 @@ public class MainActivity extends AppCompatActivity implements OnTodoClickListen
         taskViewModel = new ViewModelProvider.AndroidViewModelFactory(
                 MainActivity.this.getApplication()).create(TaskViewModel.class);
 
+        sharedViewModel = new ViewModelProvider(this)
+                .get(SharedViewModel.class);
+
         taskViewModel.getAllTasks().observe(this, tasks -> {
            recyclerViewAdapter = new RecyclerViewAdapter(tasks, this);
            recyclerView.setAdapter(recyclerViewAdapter);
         });
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-//            Task task = new Task("Todo", Priority.HIGH, Calendar.getInstance().getTime(),
-//                    Calendar.getInstance().getTime(), false);
-//            TaskViewModel.insert(task);
-            showBottomSheetDialog();
-        });
+        fab.setOnClickListener(view -> { showBottomSheetDialog(); });
     }
 
     private void showBottomSheetDialog() {
@@ -88,7 +89,16 @@ public class MainActivity extends AppCompatActivity implements OnTodoClickListen
     }
 
     @Override
-    public void onTodoClick(int adapterPosition, Task task) {
-        Log.d("Click","onTodoClick "+ adapterPosition);
+    public void onTodoClick(Task task) {
+        sharedViewModel.selectItem(task);
+        sharedViewModel.setIsEdit(true);
+        showBottomSheetDialog();
     }
+
+    @Override
+    public void onTodoRadioButtonClick(Task task) {
+        TaskViewModel.delete(task);
+        recyclerViewAdapter.notifyDataSetChanged();
+    }
+
 }
