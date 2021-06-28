@@ -158,7 +158,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements Vi
                 Snackbar.make(saveButton, R.string.empty_field, Snackbar.LENGTH_LONG).show();
             }
 
-            sharedViewModel.getSelectedItem().getValue().setDueDate(Calendar.getInstance().getTime());
+//            sharedViewModel.getSelectedItem().getValue().setDueDate(Calendar.getInstance().getTime());
         });
     }
 

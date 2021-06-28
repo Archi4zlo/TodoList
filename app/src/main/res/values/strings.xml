@@ -25,6 +25,8 @@
     <string name="radio_med">Medium</string>
     <string name="radio_low">Low</string>
     <string name="image_description">button image</string>
-    <string name="about_text">TodoList Clone App - by BAWP - version 0.1</string>
-    <string name="add_todos">Add a Todo...</string>
+    <string name="about_text">This is simple TodoList app. If you want to add a new todo you must click to fab button and chose dueDate and priority (High, Medium or Low). Next you should to click addButton( at right) and your todo will be add.
+    If you want to change your todo - click and chose new params.</string>
+    <string name="add_todos">Add a Todo…</string>
+    <string name="thanks_that_you_with_us">Thanks that you with us.</string>
 </resources>

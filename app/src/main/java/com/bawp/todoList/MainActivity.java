@@ -1,6 +1,7 @@
 package com.bawp.todoList;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -82,7 +83,9 @@ public class MainActivity extends AppCompatActivity implements OnTodoClickListen
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(MainActivity.this,AboutActivity.class);
+            startActivity(intent);
+
         }
 
         return super.onOptionsItemSelected(item);
