@@ -26,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class BottomSheetFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
@@ -79,6 +80,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements Vi
         super.onResume();
         if (sharedViewModel.getSelectedItem().getValue() != null) {
             isEdit = sharedViewModel.getIsEdit();
+            dueDate = sharedViewModel.getSelectedItem().getValue().dueDate;
 
             Task task = sharedViewModel.getSelectedItem().getValue();
             enterTodo.setText(task.getTask());
@@ -135,7 +137,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements Vi
             if (!TextUtils.isEmpty(task) && dueDate != null && priority != null) {
                 Task myTask = new Task(task, priority, dueDate,
                         Calendar.getInstance().getTime(), false);
-
                 if (isEdit) {
                     Task updateTask = sharedViewModel.getSelectedItem().getValue();
                     updateTask.setTask(task);
@@ -157,6 +158,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment implements Vi
                 Snackbar.make(saveButton, R.string.empty_field, Snackbar.LENGTH_LONG).show();
             }
 
+            sharedViewModel.getSelectedItem().getValue().setDueDate(Calendar.getInstance().getTime());
         });
     }
 
